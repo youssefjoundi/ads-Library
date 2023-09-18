@@ -178,12 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 .setAppLovinInterstitialId(Constant.APPLOVIN_INTERSTITIAL_ID)
                 .setAppLovinInterstitialZoneId(Constant.APPLOVIN_INTERSTITIAL_ZONE_ID)
                 .setInterval(Constant.INTERSTITIAL_AD_INTERVAL)
-                .build(() -> {
-
-                    Toast.makeText(this, "Hello From load******", Toast.LENGTH_LONG).show();
-
-                    Log.d(TAG, "onAdDismissed");
-                });
+                .build();
     }
 
     private void loadRewardedAd() {
@@ -230,8 +225,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void showInterstitialAd() {
         interstitialAd.show(() -> {
-            Log.d(TAG, "onAdShowed");
-        }, () -> {
             Toast.makeText(this, "Hello From showwwwwwwwwwww", Toast.LENGTH_LONG).show();
             Log.d(TAG, "onAdDismissed");
         });

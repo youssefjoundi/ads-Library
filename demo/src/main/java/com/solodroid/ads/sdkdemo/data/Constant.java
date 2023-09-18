@@ -35,7 +35,7 @@ public class Constant {
 
     public static final String APPLOVIN_BANNER_ZONE_ID = "afb7122672e86340";
     public static final String APPLOVIN_BANNER_MREC_ZONE_ID = "81287b697d935c32";
-    public static final String APPLOVIN_INTERSTITIAL_ZONE_ID = "b6eba8b976279ea5";
+    public static final String APPLOVIN_INTERSTITIAL_ZONE_ID = "xxxb6eba8b976279ea5";
     public static final String APPLOVIN_DISC_REWARDED_ZONE_ID = "b6eba8b976279ea5";
 
 
