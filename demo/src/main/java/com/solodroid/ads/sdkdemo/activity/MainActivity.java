@@ -179,6 +179,9 @@ public class MainActivity extends AppCompatActivity {
                 .setAppLovinInterstitialZoneId(Constant.APPLOVIN_INTERSTITIAL_ZONE_ID)
                 .setInterval(Constant.INTERSTITIAL_AD_INTERVAL)
                 .build(() -> {
+
+                    Toast.makeText(this, "Hello From load******", Toast.LENGTH_LONG).show();
+
                     Log.d(TAG, "onAdDismissed");
                 });
     }
@@ -229,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
         interstitialAd.show(() -> {
             Log.d(TAG, "onAdShowed");
         }, () -> {
+            Toast.makeText(this, "Hello From showwwwwwwwwwww", Toast.LENGTH_LONG).show();
             Log.d(TAG, "onAdDismissed");
         });
 
@@ -248,7 +252,9 @@ public class MainActivity extends AppCompatActivity {
                 .setNativeAdBackgroundColor(R.color.colorNativeBackgroundLight, R.color.colorNativeBackgroundDark)
                 .setPadding(0, 0, 0, 0)
                 .setDarkTheme(sharedPref.getIsDarkTheme())
-                .build();
+                .build(()-> {
+                    Toast.makeText(this, "Native event *****", Toast.LENGTH_LONG).show();
+                });
     }
 
     private void loadNativeAdView(View view) {

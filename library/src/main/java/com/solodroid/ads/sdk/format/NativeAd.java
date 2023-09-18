@@ -54,6 +54,8 @@ import com.solodroid.ads.sdk.helper.AppLovinCustomEventBanner;
 import com.solodroid.ads.sdk.util.AdManagerTemplateView;
 import com.solodroid.ads.sdk.util.Constant;
 import com.solodroid.ads.sdk.util.NativeTemplateStyle;
+import com.solodroid.ads.sdk.util.OnInterstitialAdDismissedListener;
+import com.solodroid.ads.sdk.util.OnNativeLoaded;
 import com.solodroid.ads.sdk.util.TemplateView;
 import com.solodroid.ads.sdk.util.Tools;
 
@@ -96,7 +98,6 @@ public class NativeAd {
         private String fanNativeId = "";
         private String appLovinNativeId = "";
         private String appLovinDiscMrecZoneId = "";
-        private String wortiseNativeId = "";
         private int placementStatus = 1;
         private boolean darkTheme = false;
         private boolean legacyGDPR = false;
@@ -109,8 +110,8 @@ public class NativeAd {
             this.activity = activity;
         }
 
-        public Builder build() {
-            loadNativeAd();
+        public Builder build(OnNativeLoaded OnNativeLoaded) {
+            loadNativeAd(OnNativeLoaded);
             return this;
         }
 
@@ -169,11 +170,6 @@ public class NativeAd {
             return this;
         }
 
-        public Builder setWortiseNativeId(String wortiseNativeId) {
-            this.wortiseNativeId = wortiseNativeId;
-            return this;
-        }
-
         public Builder setPlacementStatus(int placementStatus) {
             this.placementStatus = placementStatus;
             return this;
@@ -200,7 +196,7 @@ public class NativeAd {
             return this;
         }
 
-        public void loadNativeAd() {
+        public void loadNativeAd(OnNativeLoaded OnNativeLoaded) {
 
             if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
 
@@ -244,9 +240,15 @@ public class NativeAd {
                                         nativeAdViewContainer.setVisibility(View.VISIBLE);
                                     })
                                     .withAdListener(new AdListener() {
+
+                                        @Override
+                                        public void onAdLoaded() {
+                                            OnNativeLoaded.onNativeLoaded();
+                                        }
+
                                         @Override
                                         public void onAdFailedToLoad(@NonNull LoadAdError adError) {
-                                            loadBackupNativeAd();
+                                            loadBackupNativeAd(OnNativeLoaded);
                                         }
                                     })
                                     .build();
@@ -278,9 +280,15 @@ public class NativeAd {
                                         nativeAdViewContainer.setVisibility(View.VISIBLE);
                                     })
                                     .withAdListener(new AdListener() {
+
+                                        @Override
+                                        public void onAdLoaded() {
+                                            OnNativeLoaded.onNativeLoaded();
+                                        }
+
                                         @Override
                                         public void onAdFailedToLoad(@NonNull LoadAdError adError) {
-                                            loadBackupNativeAd();
+                                            loadBackupNativeAd(OnNativeLoaded);
                                         }
                                     })
                                     .build();
@@ -301,7 +309,7 @@ public class NativeAd {
 
                             @Override
                             public void onError(com.facebook.ads.Ad ad, AdError adError) {
-                                loadBackupNativeAd();
+                                loadBackupNativeAd(OnNativeLoaded);
                             }
 
                             @Override
@@ -387,7 +395,7 @@ public class NativeAd {
 
                                 // Register the Title and CTA button to listen for clicks.
                                 fanNativeAd.registerViewForInteraction(nativeAdView, nativeAdIcon, nativeAdMedia, clickableViews);
-
+                                OnNativeLoaded.onNativeLoaded();
                             }
 
                             @Override
@@ -434,14 +442,14 @@ public class NativeAd {
                                     } else {
                                         applovinNativeBackground.setBackgroundResource(nativeBackgroundLight);
                                     }
-
+                                    OnNativeLoaded.onNativeLoaded();
                                     Log.d(TAG, "Max Native Ad loaded successfully");
                                 }
 
                                 @Override
                                 public void onNativeAdLoadFailed(final String adUnitId, final MaxError error) {
                                     // We recommend retrying with exponentially higher delays up to a maximum delay
-                                    loadBackupNativeAd();
+                                    loadBackupNativeAd(OnNativeLoaded);
                                     Log.d(TAG, "failed to load Max Native Ad with message : " + error.getMessage() + " and error code : " + error.getCode());
                                 }
 
@@ -474,13 +482,14 @@ public class NativeAd {
                                 public void adReceived(AppLovinAd ad) {
                                     appLovinDiscoveryMrecAd.setVisibility(View.VISIBLE);
                                     nativeAdViewContainer.setVisibility(View.VISIBLE);
+                                    OnNativeLoaded.onNativeLoaded();
                                 }
 
                                 @Override
                                 public void failedToReceiveAd(int errorCode) {
                                     appLovinDiscoveryMrecAd.setVisibility(View.GONE);
                                     nativeAdViewContainer.setVisibility(View.GONE);
-                                    loadBackupNativeAd();
+                                    loadBackupNativeAd(OnNativeLoaded);
                                 }
                             });
                             appLovinDiscoveryMrecAd.addView(this.appLovinAdView);
@@ -503,7 +512,7 @@ public class NativeAd {
 
         }
 
-        public void loadBackupNativeAd() {
+        public void loadBackupNativeAd(OnNativeLoaded OnNativeLoaded) {
 
             if (adStatus.equals(AD_STATUS_ON) && placementStatus != 0) {
 
@@ -556,6 +565,7 @@ public class NativeAd {
                         } else {
                             Log.d(TAG, "AdMob Native Ad has been loaded");
                         }
+                        OnNativeLoaded.onNativeLoaded();
                         break;
 
                     case GOOGLE_AD_MANAGER:
@@ -591,6 +601,7 @@ public class NativeAd {
                         } else {
                             Log.d(TAG, "Ad Manager Native Ad has been loaded");
                         }
+                        OnNativeLoaded.onNativeLoaded();
                         break;
 
                     case FAN:
@@ -707,6 +718,7 @@ public class NativeAd {
 
                         com.facebook.ads.NativeAd.NativeLoadAdConfig loadAdConfig = fanNativeAd.buildLoadAdConfig().withAdListener(nativeAdListener).build();
                         fanNativeAd.loadAd(loadAdConfig);
+                        OnNativeLoaded.onNativeLoaded();
                         break;
 
 
@@ -759,6 +771,7 @@ public class NativeAd {
                         } else {
                             Log.d(TAG, "AppLovin Native Ad has been loaded");
                         }
+                        OnNativeLoaded.onNativeLoaded();
                         break;
 
                     case APPLOVIN_DISCOVERY:
@@ -795,10 +808,12 @@ public class NativeAd {
                         } else {
                             Log.d(TAG, "AppLovin Discovery Mrec Ad has been loaded");
                         }
+                        OnNativeLoaded.onNativeLoaded();
                         break;
 
                     case NONE:
                         nativeAdViewContainer.setVisibility(View.GONE);
+                        OnNativeLoaded.onNativeLoaded();
                         break;
                 }
 
