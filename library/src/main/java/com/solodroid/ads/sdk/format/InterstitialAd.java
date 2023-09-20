@@ -82,6 +82,7 @@ public class InterstitialAd {
         }
 
         public Builder build() {
+            loadInterstitialAd();
             return this;
         }
 
