@@ -541,6 +541,7 @@ public class InterstitialAd {
 
                     case NONE:
                         //do nothing
+                        Toast.makeText(activity, "*******************From None", Toast.LENGTH_LONG).show();
                         OnInterstitialAdDismissedListener.onInterstitialAdDismissed();
                         break;
                 }

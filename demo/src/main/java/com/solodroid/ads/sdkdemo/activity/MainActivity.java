@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         loadOpenAds();
         loadBannerAd();
         loadInterstitialAd();
+        loadInterstitialAd();
         loadRewardedAd();
 
         nativeAdViewContainer = findViewById(R.id.native_ad);
